@@ -1,17 +1,12 @@
 import logging
 from pathlib import Path
 
-from rich.logging import RichHandler
-
 from .distributed import global_leader_only
 
 
 @global_leader_only
 def setup_logging(run_dir):
     handlers = []
-    stdout_handler = RichHandler()
-    stdout_handler.setLevel(logging.INFO)
-    handlers.append(stdout_handler)
 
     if run_dir is not None:
         filename = Path(run_dir) / f"log.txt"

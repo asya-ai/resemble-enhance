@@ -3,13 +3,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from omegaconf import OmegaConf
-from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
 
 logger = logging.getLogger(__name__)
-
-console = Console()
 
 
 def _make_stft_cfg(hop_length, win_length=None):
@@ -17,19 +12,6 @@ def _make_stft_cfg(hop_length, win_length=None):
         win_length = 4 * hop_length
     n_fft = 2 ** (win_length - 1).bit_length()
     return dict(n_fft=n_fft, hop_length=hop_length, win_length=win_length)
-
-
-def _build_rich_table(rows, columns, title=None):
-    table = Table(title=title, header_style=None)
-    for column in columns:
-        table.add_column(column.capitalize(), justify="left")
-    for row in rows:
-        table.add_row(*map(str, row))
-    return Panel(table, expand=False)
-
-
-def _rich_print_dict(d, title="Config", key="Key", value="Value"):
-    console.print(_build_rich_table(d.items(), [key, value], title))
 
 
 @dataclass(frozen=True)
@@ -123,6 +105,3 @@ class HParams:
                 raise ValueError(f"Found inconsistent hparams: {errors}, consider deleting {run_dir}")
 
         return hps[0]
-
-    def print(self):
-        _rich_print_dict(asdict(self), title="HParams")
